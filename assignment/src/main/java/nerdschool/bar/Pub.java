@@ -1,5 +1,8 @@
 package nerdschool.bar;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Pub {
 
 
@@ -9,61 +12,95 @@ public class Pub {
     public static final String GT = "gt";
     public static final String BACARDI_SPECIAL = "bacardi_special";
 
+    public static final Map<String,Integer> price_list = fillPriceList();
+
+
+
+    private static Map<String, Integer> fillPriceList() {
+        HashMap<String, Integer> priceList = new HashMap<>();
+
+        priceList.put(ONE_BEER, 74);
+        priceList.put(ONE_CIDER, 103);
+        priceList.put(A_PROPER_CIDER, 110);
+        priceList.put(GT, getGTPrice());
+        priceList.put(BACARDI_SPECIAL, getBacardiPrice());
+
+        return priceList;
+    }
+
+    private static int getBacardiPrice() {
+
+        return getGinPrice()/2 + getRumPrice() + getGrenadinePrice() + getLimeJuicePrice();
+    }
+
+    private static int getGTPrice() {
+
+
+        return getGinPrice()+ getTonicPrice()+ getGreenStuffPrice();
+    }
+
+
+
     public int computeCost(String drink, boolean student, int amount) {
 
-        if (amount > 2 && (drink == GT || drink == BACARDI_SPECIAL)) {
-            throw new RuntimeException("Too many drinks, max 2.");
+        checkForLegalOrder(drink, amount);
+
+        int actual_price =   price_list.get(drink);
+
+        if(student && !(drink.equals(GT) || drink.equals(BACARDI_SPECIAL))){
+            actual_price = actual_price - actual_price/10;
         }
-        int price;
-        if (drink.equals(ONE_BEER)) {
-            price = 74;
-        }
-        else if (drink.equals(ONE_CIDER)) {
-            price = 103;
-        }
-        else if (drink.equals(A_PROPER_CIDER)) price = 110;
-        else if (drink.equals(GT)) {
-            price = ingredient6() + ingredient5() + ingredient4();
-        }
-        else if (drink.equals(BACARDI_SPECIAL)) {
-            price = ingredient6()/2 + ingredient1() + ingredient2() + ingredient3();
-        }
-        else {
+
+        return actual_price*amount;
+
+    }
+
+
+
+
+//    private int priceFactory(String drink,boolean student, int amount){
+
+//    }
+
+    private void checkForLegalOrder(String drink, int amount) {
+
+        if(!price_list.containsKey(drink)){
             throw new RuntimeException("No such drink exists");
         }
-        if (student && (drink == ONE_CIDER || drink == ONE_BEER || drink == A_PROPER_CIDER)) {
-            price = price - price/10;
+
+        if(amount > 2 && (drink.equals(GT) || drink.equals(BACARDI_SPECIAL))){
+            throw new RuntimeException("Too many drinks, max 2");
+
         }
-        return price*amount;
     }
 
     //one unit of rum
-    private int ingredient1() {
+    private static int getRumPrice() {
         return 65;
     }
 
     //one unit of grenadine
-    private int ingredient2() {
+    private static int getGrenadinePrice() {
         return 10;
     }
 
     //one unit of lime juice
-    private int ingredient3() {
+    private static int getLimeJuicePrice() {
         return 10;
     }
     
     //one unit of green stuff
-    private int ingredient4() {
+    private static int getGreenStuffPrice() {
         return 10;
     }
 
     //one unit of tonic water
-    private int ingredient5() {
+    private static int getTonicPrice() {
         return 20;
     }
 
     //one unit of gin
-    private int ingredient6() {
+    private static int getGinPrice() {
         return 85;
     }
 }
