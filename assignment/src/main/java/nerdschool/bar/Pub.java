@@ -104,3 +104,15 @@ public class Pub {
         return 85;
     }
 }
+
+
+/*
+    Differences between lecturer and mine:
+        Made beverage-object
+        made beverage-object amountLimited
+        checked for test-failing throughout
+        did other stuff.
+
+
+
+ */
